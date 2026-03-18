@@ -1,7 +1,193 @@
-<mvc:View controllerName="com.tim.orderintel.controller.PurchaseOrder"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-        <content />
+<mvc:View
+    controllerName="com.tim.orderintel.controller.PurchaseOrder"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="page" title="{i18n>title}" showHeader="false">
+        <customHeader>
+            <Bar class="oi-topbar">
+                <contentLeft>
+                    <HBox alignItems="Center" class="oi-topbar-left">
+                        <Text text="SAP" class="oi-logo" />
+                        <Text text="Manage Purchase Orders" class="oi-header-title" />
+                        <Label text="AI BOT v2" class="oi-pill" />
+                    </HBox>
+                </contentLeft>
+                <contentRight>
+                    <Text text="{user>/displayName}" class="oi-user" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <content>
+            <HBox class="oi-layout" renderType="Bare">
+                <VBox class="oi-main" renderType="Bare">
+                    <VBox class="oi-page-title">
+                        <Title text="{i18n>title}" level="H2" />
+                        <Text text="Manage Purchase Orders · Company Code {po>/companyCode} · Plant {po>/plant}" class="oi-subtitle" />
+                    </VBox>
+
+                    <Panel class="oi-card" expandable="false">
+                        <VBox class="oi-card-inner">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="oi-card-header">
+                                <VBox>
+                                    <Title text="Purchase Order {po>/poNumber}" level="H3" class="oi-po-title" />
+                                    <Text text="Vendor {po>/vendor/id} — {po>/vendor/name}" class="oi-muted" />
+                                </VBox>
+                                <Button text="Ask AI Assistant" type="Emphasized" icon="sap-icon://assistant" press="onAskAssistant" />
+                            </HBox>
+
+                            <HBox class="oi-po-meta" justifyContent="SpaceBetween" wrap="Wrap">
+                                <VBox class="oi-meta-block">
+                                    <Text text="VENDOR" class="oi-meta-label" />
+                                    <Text text="{po>/vendor/id} — {po>/vendor/name}" class="oi-meta-value" />
+                                </VBox>
+                                <VBox class="oi-meta-block">
+                                    <Text text="NET VALUE" class="oi-meta-label" />
+                                    <Text text="{po>/netValue}" class="oi-meta-value" />
+                                </VBox>
+                                <VBox class="oi-meta-block">
+                                    <Text text="DOC DATE" class="oi-meta-label" />
+                                    <Text text="{po>/docDate}" class="oi-meta-value" />
+                                </VBox>
+                                <VBox class="oi-meta-block">
+                                    <Text text="STATUS" class="oi-meta-label" />
+                                    <ObjectStatus text="{po>/status}" state="Success" class="oi-status-pill" />
+                                </VBox>
+                                <VBox class="oi-meta-block">
+                                    <Text text="PURCHASING ORG" class="oi-meta-label" />
+                                    <Text text="{po>/purchasingOrg}" class="oi-meta-value" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </Panel>
+
+                    <Panel class="oi-card" expandable="false">
+                        <HBox alignItems="Center" justifyContent="SpaceBetween" class="oi-card-section">
+                            <Title text="Purchase Order Items" level="H4" />
+                            <Text text="{= ${po>/items}.length + ' items'}" class="oi-muted" />
+                        </HBox>
+                        <Table class="oi-table" items="{po>/items}">
+                            <columns>
+                                <Column><Text text="ITEM" /></Column>
+                                <Column><Text text="MATERIAL" /></Column>
+                                <Column><Text text="DESCRIPTION" /></Column>
+                                <Column hAlign="End"><Text text="QTY" /></Column>
+                                <Column><Text text="UOM" /></Column>
+                                <Column hAlign="End"><Text text="NET PRICE" /></Column>
+                                <Column><Text text="DELIVERY DATE" /></Column>
+                                <Column><Text text="STATUS" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{po>item}" />
+                                        <Link text="{po>material}" press="onMaterialPress" />
+                                        <Text text="{po>description}" />
+                                        <Text text="{po>qty}" textAlign="End" />
+                                        <Text text="{po>uom}" />
+                                        <Text text="{po>netPrice}" textAlign="End" />
+                                        <Text text="{po>deliveryDate}" />
+                                        <ObjectStatus
+                                            text="{po>status}"
+                                            state="{= ${po>status} === 'Open' ? 'Success' : 'Warning' }"
+                                            class="oi-status-pill" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </Panel>
+
+                    <Panel class="oi-card" expandable="false">
+                        <Title text="Vendor Details" level="H4" class="oi-card-section" />
+                        <Table class="oi-table" items="{po>/vendorDetails}">
+                            <columns>
+                                <Column><Text text="VENDOR" /></Column>
+                                <Column><Text text="NAME" /></Column>
+                                <Column><Text text="CITY" /></Column>
+                                <Column><Text text="COUNTRY" /></Column>
+                                <Column><Text text="PHONE" /></Column>
+                                <Column><Text text="PAYMENT TERMS" /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{po>vendorId}" />
+                                        <Text text="{po>name}" />
+                                        <Text text="{po>city}" />
+                                        <Text text="{po>country}" />
+                                        <Text text="{po>phone}" />
+                                        <Text text="{po>paymentTerms}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </Panel>
+                </VBox>
+
+                <VBox class="oi-assistant" renderType="Bare">
+                    <HBox class="oi-assistant-header" alignItems="Center" justifyContent="SpaceBetween">
+                        <HBox alignItems="Center">
+                            <core:Icon src="sap-icon://assistant" class="oi-assistant-icon" />
+                            <Title text="AI Assistant" level="H4" />
+                        </HBox>
+                        <Button icon="sap-icon://decline" type="Transparent" press="onToggleAssistant" />
+                    </HBox>
+
+                    <HBox class="oi-assistant-meta" alignItems="Center">
+                        <core:Icon src="sap-icon://locked" class="oi-lock" />
+                        <Text text="v2 On-Premise · Authenticated via X-Bot-Api-Key · No BTP" class="oi-assistant-meta-text" />
+                    </HBox>
+
+                    <VBox class="oi-context">
+                        <Text text="Context: PurchaseOrder-manage · PO {po>/poNumber} · Vendor {po>/vendor/id}" />
+                    </VBox>
+
+                    <List class="oi-chat-list" items="{chat>/messages}" showSeparators="None">
+                        <items>
+                            <CustomListItem>
+                                <HBox
+                                    class="oi-chat-row"
+                                    justifyContent="{= ${chat>author} === 'user' ? 'End' : 'Start' }">
+                                    <VBox class="oi-msg">
+                                        <customData>
+                                            <core:CustomData key="author" value="{chat>author}" writeToDom="true" />
+                                        </customData>
+                                        <Text text="{chat>text}" class="oi-msg-text" />
+                                    </VBox>
+                                </HBox>
+                            </CustomListItem>
+                        </items>
+                    </List>
+
+                    <HBox class="oi-quick-actions" wrap="Wrap">
+                        <Button text="Summarize PO" type="Transparent" press="onQuickAction">
+                            <customData>
+                                <core:CustomData key="action" value="Summarize this PO for me." writeToDom="true" />
+                            </customData>
+                        </Button>
+                        <Button text="Vendor Status" type="Transparent" press="onQuickAction">
+                            <customData>
+                                <core:CustomData key="action" value="Give me the vendor status and payment terms." writeToDom="true" />
+                            </customData>
+                        </Button>
+                        <Button text="Delivery Dates" type="Transparent" press="onQuickAction">
+                            <customData>
+                                <core:CustomData key="action" value="List delivery dates and any pending items." writeToDom="true" />
+                            </customData>
+                        </Button>
+                    </HBox>
+
+                    <VBox class="oi-chat-input">
+                        <TextArea value="{chat>/input}" rows="2" placeholder="Ask about this PO, vendor, or items..." />
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="oi-chat-actions">
+                            <Text text="{chat>/statusText}" class="oi-muted" />
+                            <Button text="Send" type="Emphasized" press="onSendMessage" enabled="{= !${chat>/sending} }" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </content>
     </Page>
 </mvc:View>

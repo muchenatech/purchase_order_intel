@@ -20,6 +20,21 @@
 
 Order Intelligence Application
 
+### Backend (AI Assistant)
+
+This project includes an Express backend for OpenAI function calling and SAP OData access.
+
+1. Copy `server/.env.example` to `server/.env` and set values for:
+   - `OPENAI_API_KEY`
+   - `SAP_ODATA_BASE_URL`
+   - `SAP_PO_DETAILS_PATH`, `SAP_VENDOR_DETAILS_PATH`, `SAP_PURCHASE_ORDERS_PATH`
+   - SAP authentication (`SAP_USERNAME` + `SAP_PASSWORD` or `SAP_BEARER_TOKEN`)
+2. Start the backend:
+
+```
+    npm run server
+```
+
 ### Starting the generated app
 
 -   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated application, run the following from the generated application root folder:
@@ -37,5 +52,4 @@ Order Intelligence Application
 #### Pre-requisites:
 
 1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
-
 

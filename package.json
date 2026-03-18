@@ -2,13 +2,23 @@
   "name": "orderintel",
   "version": "0.0.1",
   "description": "Order Intelligence Application",
+  "type": "module",
   "keywords": [
     "ui5",
     "openui5",
     "sapui5"
   ],
   "main": "webapp/index.html",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "openai": "^4.62.0",
+    "pino": "^9.3.2",
+    "pino-http": "^9.0.0"
+  },
   "devDependencies": {
     "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
@@ -24,7 +34,8 @@
     "start-mock": "fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#comtimorderintel-display\"",
     "int-test": "fiori run --config ./ui5-mock.yaml --open \"test/integration/opaTests.qunit.html\"",
     "start-variants-management": "fiori run --open \"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#comtimorderintel-display\"",
-    "unit-test": "fiori run --config ./ui5-mock.yaml --open \"test/unit/unitTests.qunit.html\""
+    "unit-test": "fiori run --config ./ui5-mock.yaml --open \"test/unit/unitTests.qunit.html\"",
+    "server": "node server/index.js"
   },
   "sapuxLayer": "CUSTOMER_BASE"
 }
